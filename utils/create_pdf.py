@@ -1,7 +1,10 @@
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image
 )
-from reportlab.lib.styles import getSampleStyleSheet
+
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import os
 
 
@@ -26,9 +29,62 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
     styles = getSampleStyleSheet()
     elements = []
 
+    section_style = ParagraphStyle(
+    "SectionStyle",
+    parent=styles["Heading1"],
+    fontSize=16,
+    spaceAfter=10
+)
+    
 
     elements.append(Paragraph("Detailed Diagnostic Report", styles["Title"]))
     elements.append(Spacer(1, 20))
+
+    
+    
+    
+    property_info = report_data.get(
+    "property_information",
+    {}
+    )
+
+    elements.append(
+        Paragraph(
+            "Property Information",
+            section_style
+        )
+    )
+
+    property_table = [
+        ["Customer Name", property_info.get("customer_name", "Not Available")],
+        ["Mobile", property_info.get("mobile", "Not Available")],
+        ["Email", property_info.get("email", "Not Available")],
+        ["Address", property_info.get("address", "Not Available")],
+        ["Property Age (Years)", property_info.get("property_age", "Not Available")],
+        ["Property Type", property_info.get("property_type", "Not Available")],
+        ["Floors", property_info.get("floors", "Not Available")],
+        ["Previous Structural Audit", property_info.get("previous_structural_audit_done", "Not Available")],
+        ["Previous Repair Work", property_info.get("previous_repair_work_done", "Not Available")],
+        ["Inspection Date & Time", property_info.get("inspection_date_time", "Not Available")],
+        ["Inspected By", property_info.get("inspected_by", "Not Available")]
+    ]
+
+    table = Table(
+        property_table,
+        colWidths=[180, 320]
+    )
+
+    table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0,0), (0,-1), colors.lightgrey),
+            ("FONTNAME", (0,0), (0,-1), "Helvetica-Bold"),
+            ("GRID", (0,0), (-1,-1), 1, colors.black),
+            ("VALIGN", (0,0), (-1,-1), "MIDDLE")
+        ])
+    )
+
+    elements.append(table)
+    elements.append(Spacer(1,20))
 
     elements.append(Paragraph("1. Property Issue Summary", styles["Heading1"]))
     elements.append(Paragraph(
@@ -71,7 +127,7 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
 
         any_image = False
 
-       
+        #relevant inspection photos, by explicit Photo N reference 
         for p in obs.get("inspection_photo_refs", []):
             img_path = photo_map.get(p)
             img = _safe_image(img_path, 250, 180)
@@ -81,7 +137,7 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
                 elements.append(Spacer(1, 6))
                 any_image = True
 
-
+        #relevant thermal images, by explicit filename reference
         for fname in obs.get("thermal_image_refs", []):
             t = thermal_map.get(fname)
             if not t:
@@ -110,17 +166,43 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
         elements.append(Spacer(1, 15))
 
 
-    elements.append(Paragraph("3. Additional Notes", styles["Heading1"]))
+    elements.append(Paragraph("3. Thermal Findings Summary", styles["Heading1"]))
+    elements.append(Paragraph(
+        report_data.get("thermal_summary", "Not Available"),
+        styles["BodyText"]
+    ))
+    elements.append(Spacer(1, 12))
+
+
+    elements.append(Paragraph("4. Additional Notes", styles["Heading1"]))
     elements.append(Paragraph(
         report_data.get("additional_notes", "Not Available"),
         styles["BodyText"]
     ))
     elements.append(Spacer(1, 12))
 
-    elements.append(Paragraph("4. Missing or Unclear Information", styles["Heading1"]))
-    elements.append(Paragraph(
-        report_data.get("missing_information", "Not Available"),
-        styles["BodyText"]
-    ))
+    missing_info = report_data.get(
+        "missing_information",
+        []
+    )
+
+    if isinstance(missing_info, list):
+
+        for item in missing_info:
+            elements.append(
+                Paragraph(
+                    f"• {item}",
+                    styles["BodyText"]
+                )
+            )
+
+    else:
+
+        elements.append(
+            Paragraph(
+                str(missing_info),
+                styles["BodyText"]
+            )
+        )
 
     doc.build(elements)

@@ -24,22 +24,42 @@ combining a site Inspection Report and a Thermal Imaging Report.
 Return ONLY valid JSON. No markdown, no code block, no explanation.
 
 JSON schema:
-{{
-  "property_issue_summary": "",
-  "observations": [
-    {{
-      "area": "",
-      "observation": "",
-      "root_cause": "",
-      "severity": "Low | Moderate | High",
-      "severity_reasoning": "",
-      "recommendation": "",
-      "inspection_photo_refs": [1, 2],
-      "thermal_image_refs": ["RB02380X.JPG"]
-    }}
-  ],
-  "additional_notes": "",
-  "missing_information": ""
+  {{
+    "property_information": {{
+      "customer_name": "",
+      "mobile": "",
+      "email": "",
+      "address": "",
+      "property_age": "",
+      "property_type": "",
+      "floors": "",
+      "previous_structural_audit_done": "",
+      "previous_repair_work_done": "",
+      "inspection_date_time": "",
+      "inspected_by": ""
+    }},
+
+    "property_issue_summary": "",
+
+    "observations": [
+      {{
+        "area": "",
+        "observation": "",
+        "root_cause": "",
+        "severity": "",
+        "recommendation": "",
+        "inspection_photo_refs": [],
+        "thermal_image_refs": []
+      }}
+    ],
+
+    "additional_notes": "",
+
+    "conflicts_detected": "",
+
+    "missing_information": [
+      ""
+    ]
   }}
 
   DATA SOURCING
