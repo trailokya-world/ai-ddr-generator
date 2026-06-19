@@ -30,11 +30,13 @@ if st.button("Generate DDR"):
         with st.spinner("Extracting text..."):
             inspection_text = extract_text(inspection_path)
             thermal_text = extract_text(thermal_path)
-
+        st.success("Text Extracted Successfully.")
+        
         with st.spinner("Extracting images..."):
             inspection_images = extract_images(inspection_path, "extracted_images/inspection")
             thermal_images = extract_images(thermal_path, "extracted_images/thermal")
-
+        st.success("Images Extracted Successfully.")
+        
         # Photo N -> path (used by the LLM's inspection_photo_refs)
         photo_map = {img["order"]: img["path"] for img in inspection_images}
 
@@ -49,7 +51,8 @@ if st.button("Generate DDR"):
                 max_photo_number=len(inspection_images),
                 thermal_filenames=thermal_filenames
             )
-
+            
+            
         os.makedirs("output", exist_ok=True)
         create_pdf(ddr, photo_map, thermal_map, "output/ddr_report.pdf")
 
@@ -59,11 +62,12 @@ if st.button("Generate DDR"):
             st.json(ddr)
 
         with open("output/ddr_report.pdf", "rb") as f:
-            st.download_button(
+            if st.download_button(
                 "Download DDR PDF",
                 f,
                 file_name="DDR_Report.pdf"
-            )
-
+            ):
+                st.success("DDR_Report.pdf Downloaded Successfully")
+            
     else:
         st.warning("Please upload both the Inspection Report and the Thermal Report PDFs.")
