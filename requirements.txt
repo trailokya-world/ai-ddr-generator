@@ -1,0 +1,7 @@
+streamlit
+langchain-community
+langchain-google-genai
+pypdf
+pymupdf
+reportlab
+python-dotenv
