@@ -2,12 +2,7 @@ from langchain_community.document_loaders import PyPDFLoader
 
 
 def _clean(text):
-    """
-    Some PDFs (e.g. thermal-camera export tools) embed fonts that make
-    PyPDF extract text with stray NUL bytes between characters, like
-    "\\x002\\x008\\x00.\\x008 °C" instead of "28.8 °C". Strip those out,
-    and collapse the resulting whitespace mess.
-    """
+  
     text = text.replace("\x00", "")
     lines = [line.rstrip() for line in text.splitlines()]
     cleaned_lines = []
@@ -24,11 +19,7 @@ def _clean(text):
 
 
 def extract_text(pdf_path):
-    """
-    Extracts text from a PDF and returns a single clean string with
-    page markers (so it's safe to drop straight into an LLM prompt,
-    and so other modules can locate content by page number).
-    """
+ 
     loader = PyPDFLoader(pdf_path)
     docs = loader.load()
 

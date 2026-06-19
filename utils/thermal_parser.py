@@ -2,25 +2,18 @@ import re
 
 
 def build_thermal_map(thermal_text, thermal_images):
-    """
-    The thermal report has one reading per page, each with a thermal scan
-    image followed by a reference photo. PyMuPDF's page.get_images(full=True)
-    is not reliably scoped per page for this PDF (it can return the whole
-    document's shared image pool), so instead of grouping by page we rely on
-    sequential order: after filtering out icons/logos, content images appear
-    in the same order as the pages, two per page (scan, then photo).
-
-    Returns:
-        {
-            "RB02380X.JPG": {
-                "hotspot": "28.8 °C",
-                "coldspot": "23.4 °C",
-                "thermal_scan_path": "...",
-                "reference_photo_path": "..."
-            },
-            ...
-        }
-    """
+    
+    # Returns:
+    #     {
+    #         "RB02380X.JPG": {
+    #             "hotspot": "28.8 °C",
+    #             "coldspot": "23.4 °C",
+    #             "thermal_scan_path": "...",
+    #             "reference_photo_path": "..."
+    #         },
+    #         ...
+    #     }
+    
     thermal_map = {}
 
     chunks = re.split(r"--- Page (\d+) ---", thermal_text)

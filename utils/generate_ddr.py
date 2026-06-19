@@ -9,7 +9,7 @@ model = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 
 
 def _clean_json(raw):
-    """Strip markdown code fences in case the model adds them anyway."""
+    
     raw = raw.strip()
     raw = re.sub(r"^```(json)?", "", raw)
     raw = re.sub(r"```$", "", raw)

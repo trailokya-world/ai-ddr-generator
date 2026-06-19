@@ -4,15 +4,7 @@ import hashlib
 
 
 def _is_content_image(width, height, min_area=20000, max_aspect=4.0):
-    """
-    Heuristic filter to separate real content photos from UI clutter
-    (logos, hotspot/coldspot icons, gradient scale bars) that also get
-    picked up by PyMuPDF's image extraction:
-      - icons are small in area (e.g. 64x64, 104x104)
-      - logos tend to be very wide/short banners (extreme aspect ratio)
-    Real photos in these reports are moderate-to-large and roughly
-    square-ish, so they pass both checks.
-    """
+  
     area = width * height
     if area < min_area:
         return False
@@ -23,17 +15,7 @@ def _is_content_image(width, height, min_area=20000, max_aspect=4.0):
 
 
 def extract_images(pdf_path, output_dir, content_only=True):
-    """
-    Extracts images from a PDF, deduplicated by content hash (these reports
-    repeat the same photo inline AND in an Appendix), in document order.
 
-    content_only=True (default) drops logos/icons/scale-bar graphics so the
-    remaining list lines up with the "Photo N" captions used in the report
-    text and with the real before/after photos in the thermal report.
-
-    Returns a list of dicts, in first-occurrence order:
-        {"path": "...", "page": <1-indexed page>, "order": <1-indexed seq>}
-    """
     os.makedirs(output_dir, exist_ok=True)
 
     doc = fitz.open(pdf_path)
