@@ -26,15 +26,10 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
     styles = getSampleStyleSheet()
     elements = []
 
-    # ------------------------
-    # Title
-    # ------------------------
+
     elements.append(Paragraph("Detailed Diagnostic Report", styles["Title"]))
     elements.append(Spacer(1, 20))
 
-    # ------------------------
-    # Property Issue Summary
-    # ------------------------
     elements.append(Paragraph("1. Property Issue Summary", styles["Heading1"]))
     elements.append(Paragraph(
         report_data.get("property_issue_summary", "Not Available"),
@@ -42,9 +37,6 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
     ))
     elements.append(Spacer(1, 12))
 
-    # ------------------------
-    # Area-wise Observations
-    # ------------------------
     elements.append(Paragraph("2. Area-wise Observations", styles["Heading1"]))
 
     observations = report_data.get("observations", [])
@@ -79,7 +71,7 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
 
         any_image = False
 
-        # --- relevant inspection photos, by explicit Photo N reference ---
+       
         for p in obs.get("inspection_photo_refs", []):
             img_path = photo_map.get(p)
             img = _safe_image(img_path, 250, 180)
@@ -89,7 +81,7 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
                 elements.append(Spacer(1, 6))
                 any_image = True
 
-        # --- relevant thermal images, by explicit filename reference ---
+
         for fname in obs.get("thermal_image_refs", []):
             t = thermal_map.get(fname)
             if not t:
@@ -117,9 +109,7 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
 
         elements.append(Spacer(1, 15))
 
-    # ------------------------
-    # Additional Notes
-    # ------------------------
+
     elements.append(Paragraph("3. Additional Notes", styles["Heading1"]))
     elements.append(Paragraph(
         report_data.get("additional_notes", "Not Available"),
@@ -127,9 +117,6 @@ def create_pdf(report_data, photo_map, thermal_map, output_path):
     ))
     elements.append(Spacer(1, 12))
 
-    # ------------------------
-    # Missing Information
-    # ------------------------
     elements.append(Paragraph("4. Missing or Unclear Information", styles["Heading1"]))
     elements.append(Paragraph(
         report_data.get("missing_information", "Not Available"),
