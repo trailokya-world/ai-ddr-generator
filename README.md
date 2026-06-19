@@ -245,10 +245,5 @@ screenshots/output_report.png
 
 ---
 
-## Author
+**by Trailokya Dhotre**
 
-**Trailokya Dhotre**
-
-Final Year B.Tech CSE (AIML)
-
-Machine Learning | Deep Learning | Generative AI | LLM Applications
