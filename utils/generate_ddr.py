@@ -141,8 +141,7 @@ JSON schema:
     try:
         data = json.loads(cleaned)
     except json.JSONDecodeError:
-        # Don't let a malformed model response crash the whole app -
-        # surface it in the report instead so it's visible and debuggable.
+
         data = {
             "property_issue_summary": "Not Available - the AI model returned a response that could not be parsed as JSON.",
             "observations": [],
